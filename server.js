@@ -4,9 +4,30 @@ const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 var numberOfClients = new Map();
 
+users = [];
+
 app.use('/', express.static('public'))
 
 io.on('connection', (socket) => {
+
+  //Set username
+  console.log('A user connected');
+   socket.on('setUsername', function(data) {
+      console.log(data);
+      
+      if(users.indexOf(data) > -1) {
+         socket.emit('userExists', data + ' username is taken! Try some other username.');
+      } else {
+         users.push(data);
+         socket.emit('userSet', {username: data});
+      }
+   });
+
+  socket.on('msg', function(data) {
+    //Send message to everyone
+    io.sockets.broadcast.to(roomId).emit('newmsg', data);
+  })
+
   socket.on('join', (roomId) => {
     
     // These events are emitted only to the sender socket.
@@ -20,7 +41,7 @@ io.on('connection', (socket) => {
       console.log(`Joining room ${roomId} and emitting room_joined socket event`)
       socket.join(roomId)
       socket.emit('room_joined', roomId)
-      console.log(io.sockets.adapter.rooms[roomId])
+      
       
     } else {
       console.log(`Can't join room ${roomId}, emitting full_room socket event`)
