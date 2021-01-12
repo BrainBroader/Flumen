@@ -45,14 +45,21 @@
         left: 0px;
       }
 
+      button {
+        margin:0 auto;
+        display:block;
+      }
+
     </style>
   </head>
 
   <body>
     <div id="room-selection-container" class="centered">
       <h1>Flumen</h1>
-      <label>Enter the number of the room you want to connect</label>
-      <input id="room-input" type="text" />
+      <label>Enter your username</label>
+      <input id="username-input" type="text" /><br>
+      <label>and the code of the room you want to connect</label>
+      <input id="room-input" type="text" /><br><br>
       <button id="connect-button">CONNECT</button>
     </div>
 
@@ -60,14 +67,6 @@
       <video id="local-video" autoplay="autoplay" muted="muted"></video>
       <video id="remote-video" autoplay="autoplay"></video>
     </div>
-
-    <div id = "error-container"></div>
-      
-      <input id = "name" type = "text" name = "name" value = "" 
-         placeholder = "Enter your name!">
-      <button type = "button" name = "button" onclick = "setUsername()">
-         Let me chat!
-      </button>
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="clientVideoChat.js"></script>
