@@ -22,12 +22,7 @@
         position: absolute;
         top: 35%;
         left: 50%;
-        transform: translate(-50%, -50%);
-      }
-
-      #video-chat-container {
-        width: 100%;
-        background-color: black;
+        transform: translate(0%, 0%);
       }
 
       #local-video {
@@ -39,15 +34,38 @@
       }
 
       #remote-video {
-        height: 90%;
-        width: 90%;
+        height: 100%;
+        width: 100%;
         bottom: 0px;
         left: 0px;
+        right: 0px;
       }
 
       button {
         margin:0 auto;
         display:block;
+      }
+
+      #video-chat-container {
+        position: fixed;
+        width: 80%;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        height: 100%;
+        background-color: #282828;
+        z-index: 1010101010
+      }
+
+      #chat-container {
+        position: fixed;
+        width: 20%;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        height: 100%;
+        background-color: #ff00d4;
+        z-index: 1010101010
       }
 
     </style>
@@ -68,6 +86,10 @@
       <video id="remote-video" autoplay="autoplay"></video>
     </div>
 
+    <div id="chat-container" style="display: none">
+      <h2>Chat</h2>
+    </div>
+    
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="clientVideoChat.js"></script>
     <script type="text/javascript" src="clientMessenger.js"></script>

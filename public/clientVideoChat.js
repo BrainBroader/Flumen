@@ -3,6 +3,7 @@ const roomInput = document.getElementById('room-input')
 const usernameInput = document.getElementById('username-input')
 const connectButton = document.getElementById('connect-button')
 
+const chatContainer = document.getElementById('chat-container')
 const videoChatContainer = document.getElementById('video-chat-container')
 const localVideoComponent = document.getElementById('local-video')
 const remoteVideoComponent = document.getElementById('remote-video')
@@ -116,6 +117,7 @@ function joinRoom(room, username) {
 function showVideoConference() {
   roomSelectionContainer.style = 'display: none'
   videoChatContainer.style = 'display: block'
+  chatContainer.style = 'display: block'
 }
 
 async function setLocalStream(mediaConstraints) {
