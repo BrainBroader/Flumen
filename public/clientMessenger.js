@@ -1,5 +1,3 @@
-var socket = io();
-         
 function setUsername() {
     socket.broadcast.to(roomId).emit('setUsername', document.getElementById('name').value);
 };
