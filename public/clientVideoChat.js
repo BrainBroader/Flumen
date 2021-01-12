@@ -1,7 +1,9 @@
 const roomSelectionContainer = document.getElementById('room-selection-container')
 const roomInput = document.getElementById('room-input')
+const usernameInput = document.getElementById('username-input')
 const connectButton = document.getElementById('connect-button')
 
+const chatContainer = document.getElementById('chat-container')
 const videoChatContainer = document.getElementById('video-chat-container')
 const localVideoComponent = document.getElementById('local-video')
 const remoteVideoComponent = document.getElementById('remote-video')
@@ -31,7 +33,7 @@ const iceServers = {
 
 // BUTTON LISTENER ============================================================
 connectButton.addEventListener('click', () => {
-  joinRoom(roomInput.value)
+  joinRoom(roomInput.value, usernameInput.value)
 })
 
 // SOCKET EVENT CALLBACKS =====================================================
@@ -98,8 +100,12 @@ socket.on('webrtc_ice_candidate', (event) => {
 })
 
 // FUNCTIONS ==================================================================
-function joinRoom(room) {
-  if (room === '') {
+function joinRoom(room, username) {
+  if (room === '' && username === '') {
+    alert('Please type a room ID and a username')
+  } else if (username === '') {
+    alert('Please type a username')
+  } else if (room === '') {
     alert('Please type a room ID')
   } else {
     roomId = room
@@ -111,6 +117,7 @@ function joinRoom(room) {
 function showVideoConference() {
   roomSelectionContainer.style = 'display: none'
   videoChatContainer.style = 'display: block'
+  chatContainer.style = 'display: block'
 }
 
 async function setLocalStream(mediaConstraints) {
@@ -177,5 +184,3 @@ function sendIceCandidate(event) {
     })
   }
 }
-
-
