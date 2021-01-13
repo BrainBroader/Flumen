@@ -47,6 +47,7 @@ io.on('connection', (socket) => {
       console.log(`Can't join room ${roomId}, emitting full_room socket event`)
       socket.emit('full_room', roomId)
     }
+    socket.emit('message', 'message')
   })
 
   // These events are emitted to all the sockets connected to the same room except the sender.
@@ -66,6 +67,9 @@ io.on('connection', (socket) => {
     console.log(`Broadcasting webrtc_ice_candidate event to peers in room ${event.roomId}`)
     socket.broadcast.to(event.roomId).emit('webrtc_ice_candidate', event)
   })
+  socket.on('message', function (message) {
+    console.log(message);
+  });
 })
 
 // START THE SERVER =================================================================

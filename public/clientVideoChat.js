@@ -14,10 +14,16 @@ const mediaConstraints = {
   audio: true,
   video: { width: 1280, height: 720 },
 }
+
+var dataChannelOptions = { 
+  reliable:true 
+}; 
+
 let localStream
 let remoteStream
 let isRoomCreator
 let rtcPeerConnection // Connection between the local device and the remote peer.
+let dataChannel
 let roomId
 
 // Free public STUN servers provided by Google.
@@ -65,9 +71,14 @@ socket.on('start_call', async () => {
     addLocalTracks(rtcPeerConnection)
     rtcPeerConnection.ontrack = setRemoteStream
     rtcPeerConnection.onicecandidate = sendIceCandidate
+    openDataChannel()
     await createOffer(rtcPeerConnection)
   }
 })
+
+socket.on('message', function (message) {
+  console.log(message);
+});
 
 socket.on('webrtc_offer', async (event) => {
   console.log('Socket event callback: webrtc_offer')
@@ -184,3 +195,31 @@ function sendIceCandidate(event) {
     })
   }
 }
+
+// Handle messages
+
+function openDataChannel() { 
+
+  dataChannel = rtcPeerConnection.createDataChannel("myDataChannel", dataChannelOptions);
+
+  document.getElementById('send-Button').addEventListener('click', event => {
+    var msg = document.getElementById('message-input').value;
+    dataChannel.send(msg);
+    console.log('sent');
+  })
+
+  dataChannel.addEventListener('message', event => {
+    console.log(message);
+  });
+
+};
+
+/*function sendMessage() {
+  var msg = document.getElementById('message-input').value;
+  let obj = {
+    "message": msg,
+    "timestamp": new Date()
+  }
+  dataChannel.send(msg);
+  console.log("package sent")
+}*/

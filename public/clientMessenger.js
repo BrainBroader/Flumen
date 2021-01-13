@@ -5,7 +5,7 @@ function setUsername() {
 var user;
          
 socket.on('userExists', function(data) {
-    document.getElementById('error-container').innerHTML = data;
+    document.getElementById('chat-container').innerHTML = data;
 });
          
 socket.on('userSet', function(data) {
@@ -15,12 +15,7 @@ socket.on('userSet', function(data) {
     <div id = "message-container"></div>';
         });
          
-function sendMessage() {
-    var msg = document.getElementById('message').value;
-    if(msg) {
-        socket.broadcast.to(roomId).emit('msg', {message: msg, user: user});
-    }
-}
+
          
 socket.on('newmsg', function(data) {
     if(user) {
