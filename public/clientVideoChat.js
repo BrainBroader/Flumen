@@ -71,14 +71,9 @@ socket.on('start_call', async () => {
     addLocalTracks(rtcPeerConnection)
     rtcPeerConnection.ontrack = setRemoteStream
     rtcPeerConnection.onicecandidate = sendIceCandidate
-    openDataChannel()
     await createOffer(rtcPeerConnection)
   }
 })
-
-socket.on('message', function (message) {
-  console.log(message);
-});
 
 socket.on('webrtc_offer', async (event) => {
   console.log('Socket event callback: webrtc_offer')
@@ -108,6 +103,10 @@ socket.on('webrtc_ice_candidate', (event) => {
     candidate: event.candidate,
   })
   rtcPeerConnection.addIceCandidate(candidate)
+})
+
+socket.on('chat-message', data => {
+  appendMessage(data)
 })
 
 // FUNCTIONS ==================================================================
@@ -198,28 +197,13 @@ function sendIceCandidate(event) {
 
 // Handle messages
 
-function openDataChannel() { 
+function sendMessage() {
+  var message = document.getElementById('message-input').value;
+  socket.emit('send-chat-message', message);
+}
 
-  dataChannel = rtcPeerConnection.createDataChannel("myDataChannel", dataChannelOptions);
-
-  document.getElementById('send-Button').addEventListener('click', event => {
-    var msg = document.getElementById('message-input').value;
-    dataChannel.send(msg);
-    console.log('sent');
-  })
-
-  dataChannel.addEventListener('message', event => {
-    console.log(message);
-  });
-
-};
-
-/*function sendMessage() {
-  var msg = document.getElementById('message-input').value;
-  let obj = {
-    "message": msg,
-    "timestamp": new Date()
-  }
-  dataChannel.send(msg);
-  console.log("package sent")
-}*/
+function appendMessage(message) {
+  const messageElement = document.createElement('div')
+  messageElement.innerText = message
+  chatContainer.append(messageElement)
+}

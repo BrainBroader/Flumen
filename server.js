@@ -12,20 +12,20 @@ io.on('connection', (socket) => {
 
   //Set username
   console.log('A user connected');
-   socket.on('setUsername', function(data) {
-      console.log(data);
+  socket.on('setUsername', function(data) {
+    console.log(data);
       
-      if(users.indexOf(data) > -1) {
-         socket.emit('userExists', data + ' username is taken! Try some other username.');
-      } else {
-         users.push(data);
-         socket.emit('userSet', {username: data});
-      }
-   });
+    if(users.indexOf(data) > -1) {
+        socket.emit('userExists', data + ' username is taken! Try some other username.');
+    } else {
+        users.push(data);
+        socket.emit('userSet', {username: data});
+    }
+  });
 
-  socket.on('msg', function(data) {
-    //Send message to everyone
-    io.sockets.broadcast.to(roomId).emit('newmsg', data);
+  socket.on('send-chat-message', message => {
+    console.log(message)
+    socket.broadcast.emit('chat-message', message)
   })
 
   socket.on('join', (roomId) => {
@@ -41,8 +41,6 @@ io.on('connection', (socket) => {
       console.log(`Joining room ${roomId} and emitting room_joined socket event`)
       socket.join(roomId)
       socket.emit('room_joined', roomId)
-      
-      
     } else {
       console.log(`Can't join room ${roomId}, emitting full_room socket event`)
       socket.emit('full_room', roomId)
@@ -67,9 +65,6 @@ io.on('connection', (socket) => {
     console.log(`Broadcasting webrtc_ice_candidate event to peers in room ${event.roomId}`)
     socket.broadcast.to(event.roomId).emit('webrtc_ice_candidate', event)
   })
-  socket.on('message', function (message) {
-    console.log(message);
-  });
 })
 
 // START THE SERVER =================================================================
