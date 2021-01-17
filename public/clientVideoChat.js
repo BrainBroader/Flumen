@@ -15,10 +15,6 @@ const mediaConstraints = {
   video: { width: 1280, height: 720 },
 }
 
-var dataChannelOptions = { 
-  reliable:true 
-}; 
-
 let localStream
 let remoteStream
 let isRoomCreator
@@ -77,6 +73,7 @@ socket.on('start_call', async () => {
 
 socket.on('webrtc_offer', async (event) => {
   console.log('Socket event callback: webrtc_offer')
+  socket.emit('new-user', usernameInput.value)
 
   if (!isRoomCreator) {
     rtcPeerConnection = new RTCPeerConnection(iceServers)
@@ -106,7 +103,11 @@ socket.on('webrtc_ice_candidate', (event) => {
 })
 
 socket.on('chat-message', data => {
-  appendMessage(data)
+  appendMessage(`${data.name}: ${data.message}`)
+})
+
+socket.on('user-connected', name => {
+  appendMessage(`${name} connected`)
 })
 
 // FUNCTIONS ==================================================================

@@ -4,7 +4,7 @@ const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 var numberOfClients = new Map();
 
-users = [];
+users = {};
 
 app.use('/', express.static('public'))
 
@@ -12,20 +12,26 @@ io.on('connection', (socket) => {
 
   //Set username
   console.log('A user connected');
+
+  socket.on('new-user', name => {
+    users[socket.roomId] = name
+    socket.broadcast.emit('user-connected', name)
+  })
+
   socket.on('setUsername', function(data) {
     console.log(data);
       
     if(users.indexOf(data) > -1) {
         socket.emit('userExists', data + ' username is taken! Try some other username.');
     } else {
-        users.push(data);
+        //users.push(data);
         socket.emit('userSet', {username: data});
     }
   });
 
   socket.on('send-chat-message', message => {
     console.log(message)
-    socket.broadcast.emit('chat-message', message)
+    socket.broadcast.emit('chat-message', {message: message, name: users[socket.roomId]})
   })
 
   socket.on('join', (roomId) => {
