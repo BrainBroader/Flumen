@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>Flumen</title>
 
     <style type="text/css">
@@ -41,11 +42,6 @@
         right: 0px;
       }
 
-      button {
-        margin:0 auto;
-        display:block;
-      }
-
       #video-chat-container {
         position: fixed;
         width: 80%;
@@ -78,7 +74,7 @@
       <input id="username-input" type="text" /><br>
       <label>and the code of the room you want to connect</label>
       <input id="room-input" type="text" /><br><br>
-      <button id="connect-button">CONNECT</button>
+      <button id="connect-button" style="display: block; margin: 0%; margin: auto;">CONNECT</button>
     </div>
 
     <div id="video-chat-container" class="video-position" style="display: none">
@@ -88,10 +84,25 @@
 
     <div id="chat-container" style="display: none">
       <h2>Chat</h2>
+      <label id="users-count">5 connected</label>
+      <button id = "list-users-button" type = "button" name = "button" onclick="document.getElementById('id01').style.display='block' "class="w3-button w3-black">
+        List of users
+      </button><br><br>
       <input id="message-input" type="text" />
       <button id = "send-Button" type = "button" name = "button" onclick = "sendMessage()">
         Send
       </button>
+      <div class="w3-container">
+        <div id="id01" class="w3-modal">
+          <div class="w3-modal-content">
+            <div class="w3-container">
+              <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+              <p>Some text. Some text. Some text.</p>
+              <p>Some text. Some text. Some text.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     
     <script src="/socket.io/socket.io.js"></script>
