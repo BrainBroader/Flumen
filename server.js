@@ -14,8 +14,13 @@ io.on('connection', (socket) => {
   console.log('A user connected');
 
   socket.on('new-user', name => {
-    users[socket.roomId] = name
+    users[socket.id] = name
     socket.broadcast.emit('user-connected', name)
+  })
+
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('user-disconnected', users[socket.id])
+    delete users[socket.id]
   })
 
   socket.on('setUsername', function(data) {
@@ -31,7 +36,7 @@ io.on('connection', (socket) => {
 
   socket.on('send-chat-message', message => {
     console.log(message)
-    socket.broadcast.emit('chat-message', {message: message, name: users[socket.roomId]})
+    socket.broadcast.emit('chat-message', {message: message, name: users[socket.id]})
   })
 
   socket.on('join', (roomId) => {

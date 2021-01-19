@@ -53,6 +53,10 @@ socket.on('room_joined', async () => {
   socket.emit('start_call', roomId)
 })
 
+socket.on('user-disconnected', name => {
+  appendMessage(`${name} disconnected`)
+})
+
 socket.on('full_room', () => {
   console.log('Socket event callback: full_room')
 
@@ -61,6 +65,7 @@ socket.on('full_room', () => {
 
 socket.on('start_call', async () => {
   console.log('Socket event callback: start_call')
+  socket.emit('new-user', usernameInput.value)
 
   if (isRoomCreator) {
     rtcPeerConnection = new RTCPeerConnection(iceServers)
