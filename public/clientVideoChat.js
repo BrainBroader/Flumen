@@ -133,7 +133,7 @@ function joinRoom(room, username) {
 function showVideoConference() {
   roomSelectionContainer.style = 'display: none'
   videoChatContainer.style = 'display: block'
-  chatContainer.style = 'display: block'
+  chatContainer.style = 'display: block; overflow-y: scroll;'
 }
 
 async function setLocalStream(mediaConstraints) {
@@ -209,7 +209,5 @@ function sendMessage() {
 }
 
 function appendMessage(message) {
-  const messageElement = document.createElement('div')
-  messageElement.innerText = message
-  chatContainer.append(messageElement)
+  chatContainer.innerHTML += `${message}<br>`
 }
