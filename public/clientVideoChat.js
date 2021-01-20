@@ -7,6 +7,7 @@ const chatContainer = document.getElementById('chat-container')
 const videoChatContainer = document.getElementById('video-chat-container')
 const localVideoComponent = document.getElementById('local-video')
 const remoteVideoComponent = document.getElementById('remote-video')
+const usersList = document.getElementById('users-list')
 
 // Variables.
 const socket = io()
@@ -14,10 +15,12 @@ const mediaConstraints = {
   audio: true,
   video: { width: 1280, height: 720 },
 }
+
 let localStream
 let remoteStream
 let isRoomCreator
 let rtcPeerConnection // Connection between the local device and the remote peer.
+let dataChannel
 let roomId
 
 // Free public STUN servers provided by Google.
@@ -51,6 +54,10 @@ socket.on('room_joined', async () => {
   socket.emit('start_call', roomId)
 })
 
+socket.on('user-disconnected', name => {
+  appendMessage(`${name} disconnected`)
+})
+
 socket.on('full_room', () => {
   console.log('Socket event callback: full_room')
 
@@ -59,6 +66,7 @@ socket.on('full_room', () => {
 
 socket.on('start_call', async () => {
   console.log('Socket event callback: start_call')
+  socket.emit('new-user', usernameInput.value)
 
   if (isRoomCreator) {
     rtcPeerConnection = new RTCPeerConnection(iceServers)
@@ -71,6 +79,7 @@ socket.on('start_call', async () => {
 
 socket.on('webrtc_offer', async (event) => {
   console.log('Socket event callback: webrtc_offer')
+  socket.emit('new-user', usernameInput.value)
 
   if (!isRoomCreator) {
     rtcPeerConnection = new RTCPeerConnection(iceServers)
@@ -99,6 +108,18 @@ socket.on('webrtc_ice_candidate', (event) => {
   rtcPeerConnection.addIceCandidate(candidate)
 })
 
+socket.on('chat-message', data => {
+  appendMessage(`${data.name}: ${data.message}`)
+})
+
+socket.on('user-connected', name => {
+  appendMessage(`${name} connected`)
+})
+
+socket.on("update-users-list", users => {
+  updateList(users)
+})
+
 // FUNCTIONS ==================================================================
 function joinRoom(room, username) {
   if (room === '' && username === '') {
@@ -117,7 +138,7 @@ function joinRoom(room, username) {
 function showVideoConference() {
   roomSelectionContainer.style = 'display: none'
   videoChatContainer.style = 'display: block'
-  chatContainer.style = 'display: block'
+  chatContainer.style = 'display: block; overflow-y: scroll;'
 }
 
 async function setLocalStream(mediaConstraints) {
@@ -182,5 +203,28 @@ function sendIceCandidate(event) {
       label: event.candidate.sdpMLineIndex,
       candidate: event.candidate.candidate,
     })
+  }
+}
+
+// Handle messages
+
+function sendMessage() {
+  var message = document.getElementById('message-input').value;
+  socket.emit('send-chat-message', message);
+}
+
+function appendMessage(message) {
+  chatContainer.innerHTML += `${message}<br>`
+}
+
+// Handle users list
+
+function updateList(users) {
+  usersList.innerHTML = "";
+  for (var key in users) {
+    if (users.hasOwnProperty(key)) {           
+      console.log(key, users[key]);
+      usersList.innerHTML += `${users[key]}<br>`
+    }
   }
 }
