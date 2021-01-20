@@ -7,6 +7,7 @@ const chatContainer = document.getElementById('chat-container')
 const videoChatContainer = document.getElementById('video-chat-container')
 const localVideoComponent = document.getElementById('local-video')
 const remoteVideoComponent = document.getElementById('remote-video')
+const usersList = document.getElementById('users-list')
 
 // Variables.
 const socket = io()
@@ -115,6 +116,10 @@ socket.on('user-connected', name => {
   appendMessage(`${name} connected`)
 })
 
+socket.on("update-users-list", users => {
+  updateList(users)
+})
+
 // FUNCTIONS ==================================================================
 function joinRoom(room, username) {
   if (room === '' && username === '') {
@@ -210,4 +215,16 @@ function sendMessage() {
 
 function appendMessage(message) {
   chatContainer.innerHTML += `${message}<br>`
+}
+
+// Handle users list
+
+function updateList(users) {
+  usersList.innerHTML = "";
+  for (var key in users) {
+    if (users.hasOwnProperty(key)) {           
+      console.log(key, users[key]);
+      usersList.innerHTML += `${users[key]}<br>`
+    }
+  }
 }

@@ -16,11 +16,13 @@ io.on('connection', (socket) => {
   socket.on('new-user', name => {
     users[socket.id] = name
     socket.broadcast.emit('user-connected', name)
+    socket.broadcast.emit("update-users-list", users)
   })
 
   socket.on('disconnect', () => {
     socket.broadcast.emit('user-disconnected', users[socket.id])
     delete users[socket.id]
+    socket.broadcast.emit("update-users-list", users)
   })
 
   socket.on('setUsername', function(data) {
