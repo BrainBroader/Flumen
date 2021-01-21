@@ -25,6 +25,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit("update-users-list", users)
   })
 
+  socket.on('users-request', function() {
+    socket.emit('return-users', users);
+  });
+
   socket.on('setUsername', function(data) {
     console.log(data);
       

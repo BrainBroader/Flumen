@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>Flumen</title>
 
     <style type="text/css">
@@ -64,10 +63,68 @@
         z-index: 1010101010
       }
 
+      /* Popup box BEGIN */
+      .hover_bkgr_fricc{
+          background:rgba(0,0,0,.4);
+          cursor:pointer;
+          display:none;
+          height:100%;
+          position:fixed;
+          text-align:center;
+          top:0;
+          width:100%;
+          z-index:10000;
+      }
+      .hover_bkgr_fricc .helper{
+          display:inline-block;
+          height:100%;
+          vertical-align:middle;
+      }
+      .hover_bkgr_fricc > div {
+          background-color: #fff;
+          box-shadow: 10px 10px 60px #555;
+          display: inline-block;
+          height: auto;
+          max-width: 551px;
+          min-height: 100px;
+          vertical-align: middle;
+          width: 60%;
+          position: relative;
+          border-radius: 8px;
+          padding: 15px 5%;
+      }
+      .popupCloseButton {
+          background-color: #fff;
+          border: 3px solid #999;
+          border-radius: 50px;
+          cursor: pointer;
+          display: inline-block;
+          font-family: arial;
+          font-weight: bold;
+          position: absolute;
+          top: -20px;
+          right: -20px;
+          font-size: 25px;
+          line-height: 30px;
+          width: 30px;
+          height: 30px;
+          text-align: center;
+      }
+      .popupCloseButton:hover {
+          background-color: #ccc;
+      }
+      .trigger_popup_fricc {
+          cursor: pointer;
+          font-size: 20px;
+          margin: 20px;
+          display: inline-block;
+          font-weight: bold;
+      }
+
     </style>
   </head>
 
-  <body>
+  <body onload="getConnectedUsers()">
     <div id="room-selection-container" class="centered">
       <h1>Flumen</h1>
       <label>Enter your username</label>
@@ -80,35 +137,27 @@
     <div id="video-chat-container" class="video-position" style="display: none">
       <video id="local-video" autoplay="autoplay" muted="muted"></video>
       <video id="remote-video" autoplay="autoplay"></video>
+      <div id="users-list" class="hover_bkgr_fricc">
+        <span class="helper"></span>
+        <div>
+            <div class="popupCloseButton" onclick="hideModal()">&times;</div>
+            <div id="users-list-content">
+            </div>
+        </div>
+      </div>
     </div>
 
     <div id="chat-container" style="display: none">
       <h2>Chat</h2>
       <label id="users-count">5 connected</label>
-      <button id = "list-users-button" type = "button" name = "button" onclick="document.getElementById('id01').style.display='block' "class="w3-button w3-black">
+      <button id = "list-users-button" type = "button" name = "button" onclick="showModal()">
         List of users
       </button><br><br>
       <input id="message-input" type="text" />
       <button id = "send-Button" type = "button" name = "button" onclick = "sendMessage()">
         Send
-      </button>
-      <div class="w3-container">
-        <div id="id01" class="w3-modal">
-          <div class="w3-modal-content">
-            <div class="w3-container">
-              <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-              <div id="users-list">
-                Some text. Some text. Some text.<br>
-                Some text. Some text. Some text.<br>
-                Some text. Some text. Some text.<br>
-                Some text. Some text. Some text.<br>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </button><br>
     </div>
-    
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="clientVideoChat.js"></script>
     <script type="text/javascript" src="clientMessenger.js"></script>
