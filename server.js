@@ -37,6 +37,10 @@ io.on('connection', (socket) => {
     }
   })
 
+  socket.on('users-request', function() {
+    socket.emit('return-users', users);
+  });
+
   socket.on('setUsername', function(data) {
     console.log(data);
       

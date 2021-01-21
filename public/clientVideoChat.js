@@ -8,6 +8,7 @@ const videoChatContainer = document.getElementById('video-chat-container')
 const localVideoComponent = document.getElementById('local-video')
 const remoteVideoComponent = document.getElementById('remote-video')
 const usersList = document.getElementById('users-list')
+const usersListContent = document.getElementById('users-list-content')
 
 // Variables.
 const socket = io()
@@ -227,11 +228,38 @@ function appendMessage(message) {
 // Handle users list
 
 function updateList(users) {
-  usersList.innerHTML = "";
+  usersListContent.innerHTML = "";
   for (var key in users) {
+    if (users[key] === usernameInput.value) {
+      continue
+    }
     if (users.hasOwnProperty(key)) {           
       console.log(key, users[key]);
-      usersList.innerHTML += `${users[key]}<br>`
+      usersListContent.innerHTML += `${users[key]}<br>`
     }
   }
+}
+
+function hideModal() {
+  usersList.style = 'display: none'
+}
+
+function showModal() {
+  usersList.style = 'display: block'
+}
+
+function getConnectedUsers() {
+  socket.emit('users-request');
+
+  socket.on('return-users', function(users) {
+    for (var key in users) {
+      if (users[key] === usernameInput.value) {
+        continue
+      }
+      if (users.hasOwnProperty(key)) {           
+        console.log(key, users[key]);
+        usersListContent.innerHTML += `${users[key]}<br>`
+      }
+    }
+  })
 }
