@@ -36,9 +36,9 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('send-chat-message', message => {
+  socket.on('send-chat-message', (roomId, message) => {
     console.log(message)
-    socket.broadcast.emit('chat-message', {message: message, name: users[socket.id]})
+    socket.to(roomId).broadcast.emit('chat-message', {message: message, name: users[socket.id]})
   })
 
   socket.on('join', (roomId) => {
@@ -54,6 +54,7 @@ io.on('connection', (socket) => {
       console.log(`Joining room ${roomId} and emitting room_joined socket event`)
       socket.join(roomId)
       socket.emit('room_joined', roomId)
+      numberOfClients.set(roomId,2);
     } else {
       console.log(`Can't join room ${roomId}, emitting full_room socket event`)
       socket.emit('full_room', roomId)

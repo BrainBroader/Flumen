@@ -112,6 +112,8 @@ socket.on('chat-message', data => {
   appendMessage(`${data.name}: ${data.message}`)
 })
 
+
+
 socket.on('user-connected', name => {
   appendMessage(`${name} connected`)
 })
@@ -210,7 +212,9 @@ function sendIceCandidate(event) {
 
 function sendMessage() {
   var message = document.getElementById('message-input').value;
-  socket.emit('send-chat-message', message);
+  appendMessage(`You: ${message}`)
+  socket.emit('send-chat-message', roomId, message);
+  messageInput.value = ''
 }
 
 function appendMessage(message) {
