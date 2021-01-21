@@ -2,9 +2,11 @@ const express = require('express')
 const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
-var numberOfClients = new Map();
+
 
 users = {};
+rooms = {};
+
 
 app.use('/', express.static('public'))
 
@@ -23,6 +25,16 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('user-disconnected', users[socket.id])
     delete users[socket.id]
     socket.broadcast.emit("update-users-list", users)
+    socket.broadcast.emit('delete-user')
+
+    
+  })
+
+  socket.on('delete', roomId =>{
+    if (rooms[roomId] > 0){
+      rooms[roomId] --;
+      console.log(rooms[roomId])
+    }
   })
 
   socket.on('setUsername', function(data) {
@@ -44,17 +56,19 @@ io.on('connection', (socket) => {
   socket.on('join', (roomId) => {
     
     // These events are emitted only to the sender socket.
-    if (numberOfClients.get(roomId) == undefined) {
+    if (rooms[roomId] == undefined || rooms[roomId] == 0) {
       console.log(`Creating room ${roomId} and emitting room_created socket event`)
       socket.join(roomId)
       socket.emit('room_created', roomId)
-      numberOfClients.set(roomId,1);
+      rooms[roomId] = 1
+      console.log(rooms[roomId])
     
-    } else if (numberOfClients.get(roomId) == 1) {
+    } else if (rooms[roomId] < 2) {
       console.log(`Joining room ${roomId} and emitting room_joined socket event`)
       socket.join(roomId)
       socket.emit('room_joined', roomId)
-      numberOfClients.set(roomId,2);
+      rooms[roomId] ++
+      console.log(rooms[roomId])
     } else {
       console.log(`Can't join room ${roomId}, emitting full_room socket event`)
       socket.emit('full_room', roomId)

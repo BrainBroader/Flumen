@@ -56,7 +56,10 @@ socket.on('room_joined', async () => {
 
 socket.on('user-disconnected', name => {
   appendMessage(`${name} disconnected`)
+  socket.emit('delete', roomId)
 })
+
+
 
 socket.on('full_room', () => {
   console.log('Socket event callback: full_room')
