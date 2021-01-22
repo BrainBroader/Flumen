@@ -70,7 +70,7 @@ socket.on('full_room', () => {
 
 socket.on('start_call', async () => {
   console.log('Socket event callback: start_call')
-  socket.emit('new-user', usernameInput.value)
+  socket.emit('new-user', roomId, usernameInput.value)
 
   if (isRoomCreator) {
     rtcPeerConnection = new RTCPeerConnection(iceServers)

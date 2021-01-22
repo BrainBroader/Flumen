@@ -15,18 +15,16 @@ io.on('connection', (socket) => {
   //Set username
   console.log('A user connected');
 
-  socket.on('new-user', name => {
+  socket.on('new-user', (roomId, name) => {
     users[socket.id] = name
-    socket.broadcast.emit('user-connected', name)
-    socket.broadcast.emit("update-users-list", users)
+    socket.to(roomId).broadcast.emit('user-connected', name)
+    socket.to(roomId).broadcast.emit("update-users-list", users)
   })
 
   socket.on('disconnect', () => {
     socket.broadcast.emit('user-disconnected', users[socket.id])
     delete users[socket.id]
     socket.broadcast.emit("update-users-list", users)
-    socket.broadcast.emit('delete-user')
-
     
   })
 
