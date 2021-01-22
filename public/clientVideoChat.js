@@ -83,7 +83,7 @@ socket.on('start_call', async () => {
 
 socket.on('webrtc_offer', async (event) => {
   console.log('Socket event callback: webrtc_offer')
-  socket.emit('new-user', usernameInput.value)
+  socket.emit('new-user', roomId, usernameInput.value)
 
   if (!isRoomCreator) {
     rtcPeerConnection = new RTCPeerConnection(iceServers)
@@ -218,7 +218,7 @@ function sendMessage() {
   var message = document.getElementById('message-input').value;
   appendMessage(`You: ${message}`)
   socket.emit('send-chat-message', roomId, message);
-  messageInput.value = ''
+  message.value = ''
 }
 
 function appendMessage(message) {

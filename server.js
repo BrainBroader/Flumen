@@ -25,7 +25,6 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('user-disconnected', users[socket.id])
     delete users[socket.id]
     socket.broadcast.emit("update-users-list", users)
-    
   })
 
   socket.on('delete', roomId =>{
@@ -45,7 +44,6 @@ io.on('connection', (socket) => {
     if(users.indexOf(data) > -1) {
         socket.emit('userExists', data + ' username is taken! Try some other username.');
     } else {
-        //users.push(data);
         socket.emit('userSet', {username: data});
     }
   });
